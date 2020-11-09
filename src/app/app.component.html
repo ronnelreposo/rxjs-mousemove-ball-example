@@ -1,0 +1,23 @@
+<div id="fence">
+	<!-- <div id="ball" style="position:absolute;"></div>
+	<div id="ball" style="position:absolute;"></div> -->
+
+	<div *ngIf="(data$ | async) as data">
+		<div *ngFor="let item of data.items; let i = index">
+			<div class="ball" [ngStyle]="
+        {
+          'background-color': item.transitionViewState.color,
+          'top': i * 60 + 'px'
+        }
+        ">
+			</div>
+		</div>
+	</div>
+
+	<div style="position: absolute; top: 200px">
+		<button (click)="runTransitionSubj.next(1)" style="background-color: #c0392b"> Run </button>
+		<button (click)="runTransitionSubj.next(2)" style="background-color: #2ecc71"> Run </button>
+		<button (click)="runTransitionSubj.next(3)" style="background-color: #f1c40f"> Run </button>
+	</div>
+
+</div>
