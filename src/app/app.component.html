@@ -1,6 +1,4 @@
-<div id="fence">
-	<!-- <div id="ball" style="position:absolute;"></div>
-	<div id="ball" style="position:absolute;"></div> -->
+<div id="main">
 
 	<div *ngIf="(data$ | async) as data">
 		<div *ngFor="let item of data.items; let i = index">
@@ -22,6 +20,15 @@
 		<button (click)="runTransitionSubj.next(1)" style="background-color: #c0392b"> Run </button>
 		<button (click)="runTransitionSubj.next(2)" style="background-color: #2ecc71"> Run </button>
 		<button (click)="runTransitionSubj.next(3)" style="background-color: #f1c40f"> Run </button>
+	</div>
+
+
+	<div style="position: absolute; left: 500px">
+		<div *ngIf="(logs$ | async) as logs">
+			<div *ngFor="let logItem of logs.logs; let i = index">
+				<div>{{ logItem | json }}</div>
+			</div>
+		</div>
 	</div>
 
 </div>
