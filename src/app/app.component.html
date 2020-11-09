@@ -4,10 +4,12 @@
 
 	<div *ngIf="(data$ | async) as data">
 		<div *ngFor="let item of data.items; let i = index">
+			<!-- {{ item | json }} -->
 			<div class="ball" [ngStyle]="
         {
           'background-color': item.transitionViewState.color,
-          'top': i * 60 + 'px'
+          'top': i * 60 + 'px',
+          'transform': 'translate3d('+ item.transitionViewState.position.x +'px, '+ item.transitionViewState.position.y +'px, 0px)'
         }
         ">
 			</div>
@@ -15,6 +17,8 @@
 	</div>
 
 	<div style="position: absolute; top: 200px">
+		<!-- <button (click)="runTransitionSubj.next(1)"> Run </button> -->
+
 		<button (click)="runTransitionSubj.next(1)" style="background-color: #c0392b"> Run </button>
 		<button (click)="runTransitionSubj.next(2)" style="background-color: #2ecc71"> Run </button>
 		<button (click)="runTransitionSubj.next(3)" style="background-color: #f1c40f"> Run </button>
