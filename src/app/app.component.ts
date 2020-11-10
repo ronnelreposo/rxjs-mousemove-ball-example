@@ -9,7 +9,8 @@ import {
   Scheduler,
   defer,
   EMPTY,
-  concat
+  concat,
+  merge
 } from "rxjs";
 import { animationFrame } from "rxjs/internal/scheduler/animationFrame";
 import {
@@ -62,7 +63,7 @@ type Data = {
 };
 
 // Helper Types.
-type LogEntry = { id: number; eventType: "click" };
+type LogEntry = { id: number; eventType: "click" | "other" };
 type Logs = { counter: number; logs: LogEntry[] };
 
 @Component({
@@ -288,16 +289,27 @@ export class AppComponent implements OnInit {
       return stages$;
     };
 
-    const s1$ = this.runTransitionSubj.pipe(
+    function getRandomInt(min, max) {
+      min = Math.ceil(min);
+      max = Math.floor(max);
+      return Math.floor(Math.random() * (max - min) + min); //The maximum is exclusive and the minimum is inclusive
+    }
+    // Ticker to add noise on running stream.
+    const ticker$ = interval(500).pipe(map(_ => getRandomInt(5, 200)));
+
+    const source$ = merge(ticker$, this.runTransitionSubj);
+    const s1$ = source$.pipe(
       mergeMap(moveAndFadeOut),
       scan(transition(target), initialData)
     );
 
     // event log.
     const initLogs = { logs: [], counter: 0 };
-    this.logs$ = this.runTransitionSubj.pipe(
+    this.logs$ = source$.pipe(
       scan((acc: Logs, id: number): Logs => {
-        const nextLogEntry: LogEntry = { id: id, eventType: "click" };
+        const whitelistIds = initialData.items.map(item => item.id);
+        const eventType = whitelistIds.includes(id) ? "click" : "other";
+        const nextLogEntry: LogEntry = { id: id, eventType: eventType };
         const newLogs: Logs = {
           counter: acc.counter + 1,
           logs: [...acc.logs, nextLogEntry]
